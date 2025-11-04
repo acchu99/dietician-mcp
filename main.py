@@ -30,6 +30,7 @@ except Exception as e:
     raise
 
 
+# Food Hierarchy Service Tools
 @mcp.tool()
 def get_all_food_hierarchy() -> list[dict]:
     """
@@ -156,19 +157,7 @@ def food_stats() -> dict:
     return food_hierarchy_service.get_food_stats()
 
 
-@mcp.tool()
-def get_all_food_items() -> any:
-    """
-    Return all food entries from the nutrition dataset.
-
-    This retrieves every document in the food_items collection and includes
-    calories per 100g, serving options, and default display serving data.
-
-    Use this when the assistant needs the complete nutrition dataset.
-    """
-    return food_items_service.get_all_food_items()
-
-
+# Food Items Service Tools
 @mcp.tool()
 def list_food_names() -> list[str]:
     """
@@ -205,23 +194,6 @@ def search_food_nutrition(keyword: str) -> list[dict]:
         search_food_nutrition("potato")
     """
     return food_items_service.search_food_nutrition(keyword)
-
-
-@mcp.tool()
-def get_display_calories(name: str) -> dict | None:
-    """
-    Return the default serving size and calories for a food item.
-
-    Includes:
-      - name
-      - default display serving weight/volume
-      - serving unit description
-      - pre-computed calories for that serving
-
-    Use for quick calorie info without parsing all nutrition data.
-    """
-    return food_items_service.get_display_calories(name)
-
 
 
 if __name__ == "__main__":
