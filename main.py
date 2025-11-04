@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from mcp.server.fastmcp import FastMCP
 from db import MongoDBClient
 from services.hierarchy_queries import FoodHierarchyService
+from services.item_service import FoodItemsService
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -21,10 +22,11 @@ mcp = FastMCP("Calorie Server")
 # Initialize database client and service
 try:
     db_client = MongoDBClient(uri=os.getenv("MONGODB_URI"))
-    food_service = FoodHierarchyService(db_client)
-    logger.info("Successfully initialized food service")
+    food_hierarchy_service = FoodHierarchyService(db_client)
+    food_items_service = FoodItemsService(db_client)
+    logger.info("Successfully initialized food services")
 except Exception as e:
-    logger.error(f"Failed to initialize food service: {e}")
+    logger.error(f"Failed to initialize food services: {e}")
     raise
 
 
@@ -39,7 +41,7 @@ def get_all_food_hierarchy() -> list[dict]:
 
     Use when the assistant needs the complete food taxonomy.
     """
-    return food_service.get_all_food_hierarchy()
+    return food_hierarchy_service.get_all_food_hierarchy()
 
 
 @mcp.tool()
@@ -52,7 +54,7 @@ def get_categories() -> list[str]:
 
     Use to discover available top-level food categories.
     """
-    return food_service.get_categories()
+    return food_hierarchy_service.get_categories()
 
 
 @mcp.tool()
@@ -70,7 +72,7 @@ def get_subcategories(category: str) -> list[str]:
     Input -> "fruits & vegetables"
     Output -> ["potatoes & potato products", "leafy greens", ...]
     """
-    return food_service.get_subcategories(category)
+    return food_hierarchy_service.get_subcategories(category)
 
 
 @mcp.tool()
@@ -87,7 +89,7 @@ def get_food_items(category: str, subcategory: str) -> list[str]:
 
     Use when the user specifies a category + subcategory and wants the foods.
     """
-    return food_service.get_food_items(category, subcategory)
+    return food_hierarchy_service.get_food_items(category, subcategory)
 
 
 @mcp.tool()
@@ -105,7 +107,7 @@ def search_food(keyword: str) -> list[dict]:
     Input -> "fries"
     Output -> [{ "category": "...", "subcategory": "...", "item": "curly fries" }, ...]
     """
-    return food_service.search_food(keyword)
+    return food_hierarchy_service.search_food(keyword)
 
 
 @mcp.tool()
@@ -122,7 +124,7 @@ def find_food_category(item: str) -> list[dict]:
     Use when given a specific food and you want to know where it belongs
     in the hierarchy — e.g. "sweet potato fries".
     """
-    return food_service.find_food_category(item)
+    return food_hierarchy_service.find_food_category(item)
 
 
 @mcp.tool()
@@ -135,7 +137,7 @@ def list_all_foods() -> list[str]:
     Returns:
         list[str]: All known food names.
     """
-    return food_service.list_all_foods()
+    return food_hierarchy_service.list_all_foods()
 
 
 @mcp.tool()
@@ -151,7 +153,75 @@ def food_stats() -> dict:
 
     Useful for diagnostics, dashboards, or summarization.
     """
-    return food_service.get_food_stats()
+    return food_hierarchy_service.get_food_stats()
+
+
+@mcp.tool()
+def get_all_food_items() -> any:
+    """
+    Return all food entries from the nutrition dataset.
+
+    This retrieves every document in the food_items collection and includes
+    calories per 100g, serving options, and default display serving data.
+
+    Use this when the assistant needs the complete nutrition dataset.
+    """
+    return food_items_service.get_all_food_items()
+
+
+@mcp.tool()
+def list_food_names() -> list[str]:
+    """
+    Return the names of all foods that have nutrition data.
+
+    Useful for autocomplete, validation, or checking whether a food exists
+    in the nutrition database.
+    """
+    return food_items_service.list_food_names()
+
+
+@mcp.tool()
+def get_food_nutrition(name: str) -> dict | None:
+    """
+    Fetch complete nutritional information for a food item by exact name (case-insensitive).
+
+    Returns macro calories per 100g/ml, all serving sizes, and the default
+    display serving calories.
+
+    Example:
+        get_food_nutrition("potato salad, with egg")
+    """
+    return food_items_service.get_food_nutrition(name)
+
+
+@mcp.tool()
+def search_food_nutrition(keyword: str) -> list[dict]:
+    """
+    Search food nutrition entries by partial match (case-insensitive).
+
+    Use this when the user doesn't know the exact food name or wants
+    related items, e.g.:
+
+        search_food_nutrition("potato")
+    """
+    return food_items_service.search_food_nutrition(keyword)
+
+
+@mcp.tool()
+def get_display_calories(name: str) -> dict | None:
+    """
+    Return the default serving size and calories for a food item.
+
+    Includes:
+      - name
+      - default display serving weight/volume
+      - serving unit description
+      - pre-computed calories for that serving
+
+    Use for quick calorie info without parsing all nutrition data.
+    """
+    return food_items_service.get_display_calories(name)
+
 
 
 if __name__ == "__main__":
