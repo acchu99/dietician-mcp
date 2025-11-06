@@ -5,6 +5,7 @@ This server uses the MCP Python SDK with StreamableHTTP transport for web-based 
 It provides structured output using Pydantic schemas and follows the MCP specification.
 """
 import asyncio
+import contextlib
 import logging
 import os
 from typing import Any, Dict, List
@@ -12,6 +13,10 @@ from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
 
 import uvicorn
+from starlette.applications import Starlette
+from starlette.routing import Mount
+from starlette.middleware.cors import CORSMiddleware
+from starlette.types import ASGIApp, Scope, Receive, Send
 import mcp.types as types
 from mcp.server.lowlevel import NotificationOptions, Server
 from mcp.server.models import InitializationOptions
@@ -493,40 +498,65 @@ async def handle_call_tool(name: str, arguments: Dict[str, Any]) -> types.CallTo
         )
 
 
-async def run_server():
+def run_server():
     """Run the MCP server with StreamableHTTP transport."""
     logger.info("Starting Food MCP Server with StreamableHTTP transport...")
     
     # Configure host and port
     host = os.getenv("HOST", "0.0.0.0")
     port = int(os.getenv("PORT", "8000"))
+    json_response = os.getenv("JSON_RESPONSE", "false").lower() == "true"
     
     logger.info(f"MCP Server starting on http://{host}:{port}")
     
-    # Create the StreamableHTTP session manager
+    # Create the StreamableHTTP session manager with stateless mode for inspector compatibility
     session_manager = StreamableHTTPSessionManager(
         app=server,
         event_store=None,  # No event store for now
-        json_response=False,  # Use streaming responses
-        stateless=False,  # Maintain session state
+        json_response=json_response,  # Use JSON responses for inspector
+        stateless=True,  # Stateless mode for inspector compatibility
     )
     
-    # Create ASGI app that delegates to the session manager
-    async def app(scope, receive, send):
+    # Handle StreamableHTTP requests
+    async def handle_streamable_http(scope: Scope, receive: Receive, send: Send) -> None:
         await session_manager.handle_request(scope, receive, send)
     
-    # Run the session manager and uvicorn server
-    async with session_manager.run():
-        config = uvicorn.Config(
-            app=app,
-            host=host,
-            port=port,
-            log_level="info"
-        )
-        
-        server_instance = uvicorn.Server(config)
-        await server_instance.serve()
+    # Lifespan manager for the session manager
+    @contextlib.asynccontextmanager
+    async def lifespan(app: Starlette) -> AsyncIterator[None]:
+        async with session_manager.run():
+            logger.info("Application started with StreamableHTTP session manager!")
+            try:
+                yield
+            finally:
+                logger.info("Application shutting down...")
+    
+    # Create Starlette ASGI app with proper MCP endpoint
+    starlette_app = Starlette(
+        debug=True,
+        routes=[
+            Mount("/mcp", app=handle_streamable_http)
+        ],
+        lifespan=lifespan,
+    )
+    
+    # Add CORS middleware for browser/inspector access
+    starlette_app = CORSMiddleware(
+        starlette_app,
+        allow_origins=["*"],
+        allow_methods=["GET", "POST", "DELETE"],
+        allow_headers=["*"],
+        expose_headers=["Mcp-Session-Id"],
+    )
+    
+    # Run with uvicorn
+    uvicorn.run(
+        starlette_app,
+        host=host,
+        port=port,
+        log_level="info"
+    )
 
 
 if __name__ == "__main__":
-    asyncio.run(run_server())
+    run_server()

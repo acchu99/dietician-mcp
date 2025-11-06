@@ -71,11 +71,12 @@ All tools return structured data using Pydantic schemas:
 
 4. **Test with MCP Inspector**:
    ```bash
-   npx @modelcontextprotocol/inspector http://localhost:8000
+   npx @modelcontextprotocol/inspector http://localhost:8000/mcp
    ```
 
 5. **Access endpoints**:
-   - MCP StreamableHTTP endpoint: `http://localhost:8000`
+   - MCP StreamableHTTP endpoint: `http://localhost:8000/mcp`
+   - The server includes CORS headers for browser access
    - The server will log startup information including the listening address
 
 ### Docker Deployment
