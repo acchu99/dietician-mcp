@@ -1,4 +1,4 @@
-# Multi-stage Docker build for Low-level MCP Food Hierarchy Server
+# Multi-stage Docker build for Food MCP Server
 # Stage 1: Build stage
 FROM python:3.11-slim as builder
 
@@ -60,5 +60,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # Expose port (not needed for stdio transport but keeping for compatibility)
 EXPOSE 8000
 
-# Default command - using low-level server
-CMD ["python", "run_lowlevel.py"]
+# Default command - using MCP server
+CMD ["python", "run_server.py"]

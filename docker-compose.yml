@@ -1,40 +1,15 @@
-# Docker Compose for Local Development
+version: '3.8'
 
 services:
-  # MCP Server Application
-  food_mcp_server:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: production
-    container_name: food_mcp_server
-    restart: unless-stopped
+  food-mcp-server:
+    build: .
+    container_name: food-mcp-server
     environment:
-      # Use MongoDB Atlas connection from environment
       - MONGODB_URI=${MONGODB_URI}
-      - LOG_LEVEL=${LOG_LEVEL:-INFO}
-      - PYTHONPATH=/app
-    env_file:
-      - .env
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
     volumes:
       - ./logs:/app/logs
-      # Mount source code for development (comment out for production)
-      - .:/app
-    ports:
-      - "8000:8000"
-    healthcheck:
-      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-    networks:
-      - food_mcp_network
-
-volumes:
-  logs:
-    driver: local
-
-networks:
-  food_mcp_network:
-    driver: bridge
+    stdin_open: true
+    tty: true
+    # MCP servers use stdio transport, no port exposure needed

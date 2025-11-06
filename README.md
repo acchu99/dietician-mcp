@@ -1,18 +1,18 @@
-# Food MCP Server - Low-Level Architecture with Structured Output
+# Food MCP Server - Structured Output Architecture
 
 A Model Context Protocol (MCP) server providing comprehensive food hierarchy and nutrition data with structured output using Pydantic schemas.
 
 ## 🏗️ Architecture
 
-This server uses the **low-level MCP Python SDK** for maximum control and flexibility, providing structured output through Pydantic schemas that ensure consistent data validation and serialization.
+This server uses the **MCP Python SDK** for maximum control and flexibility, providing structured output through Pydantic schemas that ensure consistent data validation and serialization.
 
 ### Key Features
 
 - **Structured Output**: All tool responses use Pydantic schemas for validation and serialization
-- **Low-Level MCP Server**: Direct control over MCP protocol implementation
+- **MCP Protocol Compliance**: Full adherence to MCP specification with stdio transport
 - **MongoDB Atlas Integration**: Cloud-based data storage for scalability
-- **Docker Support**: Containerized deployment with multi-stage builds
-- **Comprehensive Tools**: 12 tools covering food hierarchy and nutrition data
+- **Docker Support**: Containerized deployment with optimized builds
+- **Comprehensive Tools**: 11 tools covering food hierarchy and nutrition data
 
 ## 🛠️ Available Tools
 
@@ -65,12 +65,12 @@ All tools return structured data using Pydantic schemas:
 
 3. **Run the server**:
    ```bash
-   python run_lowlevel.py
+   python3 run_server.py
    ```
 
 4. **Test with MCP Inspector**:
    ```bash
-   npx @modelcontextprotocol/inspector python run_lowlevel.py
+   npx @modelcontextprotocol/inspector python3 run_server.py
    ```
 
 ### Docker Deployment
@@ -142,7 +142,7 @@ This server replaces the previous FastMCP implementation with several advantages
 Run the test suite to verify everything works:
 
 ```bash
-python test_server.py
+python3 test_server.py
 ```
 
 Tests cover:
@@ -155,15 +155,16 @@ Tests cover:
 
 ### Project Structure
 ```
-├── lowlevel_server.py      # Main low-level MCP server
-├── run_lowlevel.py         # Entry point script
+├── server.py              # Main MCP server implementation
+├── run_server.py           # Entry point script
 ├── schemas/                # Pydantic response schemas
 │   ├── food_hierarchy.py   # Hierarchy tool schemas
 │   └── food_item.py        # Nutrition tool schemas
 ├── services/               # Business logic services
 ├── utils/                  # Database and utilities
 ├── test_server.py          # Test suite
-└── Dockerfile              # Container configuration
+├── Dockerfile              # Container configuration
+└── docker-compose.yml     # Simple deployment config
 ```
 
 ### Adding New Tools
