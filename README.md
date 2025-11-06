@@ -1,15 +1,15 @@
-# Food MCP Server - HTTP Architecture with Structured Output
+# Food MCP Server - StreamableHTTP Architecture with Structured Output
 
-A Model Context Protocol (MCP) server providing comprehensive food hierarchy and nutrition data with structured output using Pydantic schemas, served over HTTP with SSE transport.
+A Model Context Protocol (MCP) server providing comprehensive food hierarchy and nutrition data with structured output using Pydantic schemas, served over StreamableHTTP transport.
 
 ## 🏗️ Architecture
 
-This server uses the **MCP Python SDK with HTTP transport** for web-based access, providing structured output through Pydantic schemas that ensure consistent data validation and serialization.
+This server uses the **MCP Python SDK with StreamableHTTP transport** for web-based access, providing structured output through Pydantic schemas that ensure consistent data validation and serialization.
 
 ### Key Features
 
 - **Structured Output**: All tool responses use Pydantic schemas for validation and serialization
-- **HTTP Transport**: Web-accessible MCP server with SSE (Server-Sent Events) transport
+- **StreamableHTTP Transport**: Web-accessible MCP server with StreamableHTTP transport
 - **MongoDB Atlas Integration**: Cloud-based data storage for scalability
 - **Docker Support**: Containerized deployment with optimized builds
 - **Comprehensive Tools**: 11 tools covering food hierarchy and nutrition data
@@ -71,11 +71,11 @@ All tools return structured data using Pydantic schemas:
 
 4. **Test with MCP Inspector**:
    ```bash
-   npx @modelcontextprotocol/inspector http://localhost:8000/sse
+   npx @modelcontextprotocol/inspector http://localhost:8000
    ```
 
 5. **Access endpoints**:
-   - MCP SSE endpoint: `http://localhost:8000/sse`
+   - MCP StreamableHTTP endpoint: `http://localhost:8000`
    - The server will log startup information including the listening address
 
 ### Docker Deployment

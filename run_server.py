@@ -2,7 +2,7 @@
 """
 Entry point for the Food MCP Server.
 
-This script runs the MCP server with HTTP transport and SSE for 
+This script runs the MCP server with StreamableHTTP transport for 
 web-based MCP client communication. The server provides structured output using 
 Pydantic schemas and follows the MCP specification.
 """

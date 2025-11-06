@@ -32,8 +32,8 @@ async def test_server_startup():
         print("Server is ready to run with:")
         print(f"  Host: {os.environ['HOST']}")
         print(f"  Port: {os.environ['PORT']}")
-        print("  Transport: HTTP with SSE")
-        print("  MCP Inspector URL: http://localhost:8000/sse")
+        print("  Transport: StreamableHTTP")
+        print("  MCP Inspector URL: http://localhost:8000")
         
     except ImportError as e:
         print(f"❌ Import error: {e}")

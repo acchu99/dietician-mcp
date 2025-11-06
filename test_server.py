@@ -117,7 +117,7 @@ async def main():
         print("\n🎉 All tests passed successfully!")
         print("The MCP server is ready to provide structured output.")
         print("To use it with MCP inspector:")
-        print("  npx @modelcontextprotocol/inspector http://localhost:8000/sse")
+        print("  npx @modelcontextprotocol/inspector http://localhost:8000")
         
     except Exception as e:
         print(f"\n❌ Test failed: {e}")

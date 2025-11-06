@@ -1,7 +1,7 @@
 """
 Streamable HTTP MCP server implementation for Food Hierarchy and Nutrition data.
 
-This server uses the MCP Python SDK with HTTP transport for web-based access.
+This server uses the MCP Python SDK with StreamableHTTP transport for web-based access.
 It provides structured output using Pydantic schemas and follows the MCP specification.
 """
 import asyncio
@@ -12,13 +12,10 @@ from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
 
 import uvicorn
-from starlette.applications import Starlette
-from starlette.routing import Route
-from starlette.responses import JSONResponse
-import mcp.server.sse
 import mcp.types as types
 from mcp.server.lowlevel import NotificationOptions, Server
 from mcp.server.models import InitializationOptions
+from mcp.server.streamable_http_manager import StreamableHTTPSessionManager
 from dotenv import load_dotenv
 
 
@@ -497,15 +494,8 @@ async def handle_call_tool(name: str, arguments: Dict[str, Any]) -> types.CallTo
 
 
 async def run_server():
-    """Run the MCP server with HTTP transport."""
-    logger.info("Starting Food MCP Server with HTTP transport...")
-    
-    # Create Starlette app for serving MCP over HTTP
-    app = Starlette(
-        routes=[
-            Route("/sse", endpoint=mcp.server.sse.SseServerTransport(server), methods=["GET", "POST"])
-        ]
-    )
+    """Run the MCP server with StreamableHTTP transport."""
+    logger.info("Starting Food MCP Server with StreamableHTTP transport...")
     
     # Configure host and port
     host = os.getenv("HOST", "0.0.0.0")
@@ -513,16 +503,29 @@ async def run_server():
     
     logger.info(f"MCP Server starting on http://{host}:{port}")
     
-    # Run with uvicorn
-    config = uvicorn.Config(
-        app=app,
-        host=host,
-        port=port,
-        log_level="info"
+    # Create the StreamableHTTP session manager
+    session_manager = StreamableHTTPSessionManager(
+        app=server,
+        event_store=None,  # No event store for now
+        json_response=False,  # Use streaming responses
+        stateless=False,  # Maintain session state
     )
     
-    server_instance = uvicorn.Server(config)
-    await server_instance.serve()
+    # Create ASGI app that delegates to the session manager
+    async def app(scope, receive, send):
+        await session_manager.handle_request(scope, receive, send)
+    
+    # Run the session manager and uvicorn server
+    async with session_manager.run():
+        config = uvicorn.Config(
+            app=app,
+            host=host,
+            port=port,
+            log_level="info"
+        )
+        
+        server_instance = uvicorn.Server(config)
+        await server_instance.serve()
 
 
 if __name__ == "__main__":
