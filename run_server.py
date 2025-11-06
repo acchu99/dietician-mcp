@@ -2,8 +2,8 @@
 """
 Entry point for the Food MCP Server.
 
-This script runs the MCP server with proper stdio transport for 
-MCP client communication. The server provides structured output using 
+This script runs the MCP server with HTTP transport and SSE for 
+web-based MCP client communication. The server provides structured output using 
 Pydantic schemas and follows the MCP specification.
 """
 import asyncio

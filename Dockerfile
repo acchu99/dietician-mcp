@@ -57,7 +57,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD python -c "import sys; sys.exit(0)" || exit 1
 
-# Expose port (not needed for stdio transport but keeping for compatibility)
+# Expose port for HTTP MCP server
 EXPOSE 8000
 
 # Default command - using MCP server

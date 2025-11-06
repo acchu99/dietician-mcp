@@ -7,9 +7,11 @@ services:
     environment:
       - MONGODB_URI=${MONGODB_URI}
       - PYTHONUNBUFFERED=1
+      - HOST=0.0.0.0
+      - PORT=8000
     restart: unless-stopped
     volumes:
       - ./logs:/app/logs
-    stdin_open: true
-    tty: true
-    # MCP servers use stdio transport, no port exposure needed
+    ports:
+      - "8000:8000"
+    # HTTP MCP server with SSE transport

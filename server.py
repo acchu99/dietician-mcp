@@ -1,7 +1,7 @@
 """
-Low-level MCP server implementation for Food Hierarchy and Nutrition data.
+Streamable HTTP MCP server implementation for Food Hierarchy and Nutrition data.
 
-This server uses the low-level MCP Python SDK for maximum control and flexibility.
+This server uses the MCP Python SDK with HTTP transport for web-based access.
 It provides structured output using Pydantic schemas and follows the MCP specification.
 """
 import asyncio
@@ -11,11 +11,16 @@ from typing import Any, Dict, List
 from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
 
-import mcp.server.stdio
+import uvicorn
+from starlette.applications import Starlette
+from starlette.routing import Route
+from starlette.responses import JSONResponse
+import mcp.server.sse
 import mcp.types as types
 from mcp.server.lowlevel import NotificationOptions, Server
 from mcp.server.models import InitializationOptions
 from dotenv import load_dotenv
+
 
 # Import our services and schemas
 from utils.db import MongoDBClient
@@ -492,22 +497,32 @@ async def handle_call_tool(name: str, arguments: Dict[str, Any]) -> types.CallTo
 
 
 async def run_server():
-    """Run the MCP server with stdio transport."""
-    logger.info("Starting Food MCP Server...")
+    """Run the MCP server with HTTP transport."""
+    logger.info("Starting Food MCP Server with HTTP transport...")
     
-    async with mcp.server.stdio.stdio_server() as (read_stream, write_stream):
-        await server.run(
-            read_stream,
-            write_stream,
-            InitializationOptions(
-                server_name="food-mcp-server",
-                server_version="1.0.0",
-                capabilities=server.get_capabilities(
-                    notification_options=NotificationOptions(),
-                    experimental_capabilities={},
-                ),
-            ),
-        )
+    # Create Starlette app for serving MCP over HTTP
+    app = Starlette(
+        routes=[
+            Route("/sse", endpoint=mcp.server.sse.SseServerTransport(server), methods=["GET", "POST"])
+        ]
+    )
+    
+    # Configure host and port
+    host = os.getenv("HOST", "0.0.0.0")
+    port = int(os.getenv("PORT", "8000"))
+    
+    logger.info(f"MCP Server starting on http://{host}:{port}")
+    
+    # Run with uvicorn
+    config = uvicorn.Config(
+        app=app,
+        host=host,
+        port=port,
+        log_level="info"
+    )
+    
+    server_instance = uvicorn.Server(config)
+    await server_instance.serve()
 
 
 if __name__ == "__main__":

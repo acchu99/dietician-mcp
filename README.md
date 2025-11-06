@@ -1,15 +1,15 @@
-# Food MCP Server - Structured Output Architecture
+# Food MCP Server - HTTP Architecture with Structured Output
 
-A Model Context Protocol (MCP) server providing comprehensive food hierarchy and nutrition data with structured output using Pydantic schemas.
+A Model Context Protocol (MCP) server providing comprehensive food hierarchy and nutrition data with structured output using Pydantic schemas, served over HTTP with SSE transport.
 
 ## 🏗️ Architecture
 
-This server uses the **MCP Python SDK** for maximum control and flexibility, providing structured output through Pydantic schemas that ensure consistent data validation and serialization.
+This server uses the **MCP Python SDK with HTTP transport** for web-based access, providing structured output through Pydantic schemas that ensure consistent data validation and serialization.
 
 ### Key Features
 
 - **Structured Output**: All tool responses use Pydantic schemas for validation and serialization
-- **MCP Protocol Compliance**: Full adherence to MCP specification with stdio transport
+- **HTTP Transport**: Web-accessible MCP server with SSE (Server-Sent Events) transport
 - **MongoDB Atlas Integration**: Cloud-based data storage for scalability
 - **Docker Support**: Containerized deployment with optimized builds
 - **Comprehensive Tools**: 11 tools covering food hierarchy and nutrition data
@@ -60,18 +60,23 @@ All tools return structured data using Pydantic schemas:
 
 2. **Test the schemas**:
    ```bash
-   python test_server.py
+   python3 test_server.py
    ```
 
 3. **Run the server**:
    ```bash
    python3 run_server.py
+   # Server will start on http://localhost:8000
    ```
 
 4. **Test with MCP Inspector**:
    ```bash
-   npx @modelcontextprotocol/inspector python3 run_server.py
+   npx @modelcontextprotocol/inspector http://localhost:8000/sse
    ```
+
+5. **Access endpoints**:
+   - MCP SSE endpoint: `http://localhost:8000/sse`
+   - The server will log startup information including the listening address
 
 ### Docker Deployment
 

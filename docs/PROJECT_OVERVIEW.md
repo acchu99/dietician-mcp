@@ -1,17 +1,18 @@
-# Food MCP Server - Project Overview
+# Food MCP Server - Project Overview (HTTP Transport)
 
 ## 📁 Project Structure
 
 ```
 food_mcp/
-├── 📄 server.py                 # Main MCP server implementation
-├── 🚀 run_server.py             # Entry point for running the server
+├── 📄 server.py                 # Main HTTP MCP server implementation
+├── 🚀 run_server.py             # Entry point for running the HTTP server
 ├── 🧪 test_server.py            # Test suite for schemas and functionality
+├── 🌐 test_http_server.py       # HTTP server configuration test
 ├── 📋 requirements.txt          # Python dependencies
 ├── 🐳 Dockerfile                # Container build configuration  
-├── 🐳 docker-compose.yml        # Simple deployment configuration
+├── 🐳 docker-compose.yml        # HTTP deployment configuration
 ├── 📖 README.md                 # Comprehensive documentation
-├── 📄 CONVERSION_SUMMARY.md     # Migration details from FastMCP
+├── � docs/                     # Documentation files
 ├── 📂 schemas/                  # Pydantic response models
 │   ├── food_hierarchy.py        # Food hierarchy tool schemas
 │   └── food_item.py             # Nutrition tool schemas
@@ -58,11 +59,14 @@ food_mcp/
 # Run tests
 python3 test_server.py
 
-# Start server
+# Test HTTP configuration
+python3 test_http_server.py
+
+# Start HTTP server
 python3 run_server.py
 
 # Test with MCP Inspector
-npx @modelcontextprotocol/inspector python3 run_server.py
+npx @modelcontextprotocol/inspector http://localhost:8000/sse
 
 # Docker deployment
 docker-compose up --build
