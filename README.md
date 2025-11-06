@@ -88,7 +88,7 @@ All tools return structured data using Pydantic schemas:
 
 2. **Run with environment**:
    ```bash
-   docker run -e MONGODB_URI="your_mongodb_uri" food-mcp-server
+   docker run -e MONGODB_URI="your_mongodb_uri" -p 8000:8000 food-mcp-server
    ```
 
 3. **Use docker-compose**:
