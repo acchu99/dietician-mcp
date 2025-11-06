@@ -6,7 +6,7 @@ An MCP server that provides tools for querying food hierarchy data from MongoDB.
 import os
 from dotenv import load_dotenv
 from mcp.server.fastmcp import FastMCP
-from db import MongoDBClient
+from utils.db import MongoDBClient
 from services.hierarchy_queries import FoodHierarchyService
 from services.item_service import FoodItemsService
 import logging

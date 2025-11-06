@@ -1,5 +1,5 @@
 from typing import List, Dict, Any
-from db import MongoDBClient
+from utils.db import MongoDBClient
 import logging
 
 logger = logging.getLogger(__name__)
