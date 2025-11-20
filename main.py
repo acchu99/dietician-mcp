@@ -58,51 +58,30 @@ async def list_tools(request):
 
 @mcp.custom_route("/docs", methods=["GET"])
 async def docs(request):
+    from pathlib import Path
+    
     tools_list = await mcp.get_tools()
-    docs_html = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>MCP Server Template Documentation</title>
-        <style>
-            body {{ font-family: Arial, sans-serif; margin: 40px; }}
-            .endpoint {{ margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }}
-            .method {{ font-weight: bold; color: #0066cc; }}
-            .path {{ font-weight: bold; color: #cc6600; }}
-            .tools {{ margin: 10px 0; }}
-            .tool {{ margin: 5px 0; padding: 10px; background: #f5f5f5; border-radius: 3px; }}
-        </style>
-    </head>
-    <body>
-        <h1>MCP Server Template Documentation</h1>
-        <p>Template for building custom Model Context Protocol servers.</p>
-
-        <h2>Available Endpoints</h2>
-        <div class="endpoint"><span class="method">GET</span> <span class="path">/health</span><p>Health check</p></div>
-        <div class="endpoint"><span class="method">GET</span> <span class="path">/info</span><p>Server info</p></div>
-        <div class="endpoint"><span class="method">GET</span> <span class="path">/tools</span><p>List MCP tools</p></div>
-        <div class="endpoint"><span class="method">POST</span> <span class="path">/mcp</span><p>MCP protocol endpoint</p></div>
-
-        <h2>Available MCP Tools ({len(tools_list)} total)</h2>
-        <div class="tools">
-    """
+    
+    # Generate tools HTML
+    tools_html = ""
     for tool_name, tool in tools_list.items():
         description = getattr(tool, "description", None) or "No description available"
-        docs_html += f'<div class="tool"><strong>{tool_name}</strong>: {description}</div>'
-    docs_html += """
-        </div>
-        <h2>Usage</h2>
-        <p>This server implements the Model Context Protocol (MCP). Customize the tools in src/tools.py to build your own MCP server.</p>
-        
-        <h2>Getting Started</h2>
-        <p>1. Edit src/tools.py to add your own tools</p>
-        <p>2. Update the server name and description in main.py</p>
-        <p>3. Run with: python main.py --http</p>
-        <p>4. Test with: pytest</p>
-    </body>
-    </html>
-    """
-    return HTMLResponse(content=docs_html)
+        tools_html += f"""
+                <div class="bg-white/10 rounded-lg p-5 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                    <h3 class="font-bold text-lg mb-2 text-yellow-300">{tool_name}</h3>
+                    <p class="text-white/80 text-sm">{description}</p>
+                </div>
+        """
+    
+    # Read template and replace placeholders
+    template_path = Path(__file__).parent / "src" / "templates" / "docs.html"
+    with open(template_path, "r") as f:
+        template = f.read()
+    
+    html_content = template.replace("{{ tools_count }}", str(len(tools_list)))
+    html_content = html_content.replace("{{ tools_html }}", tools_html)
+    
+    return HTMLResponse(content=html_content)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="MCP Server Template")

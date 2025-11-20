@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Server Template Documentation</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @theme {
+            --color-primary: #3b82f6;
+            --color-secondary: #8b5cf6;
+            --color-accent: #06b6d4;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen text-white">
+    <!-- Header -->
+    <div class="container mx-auto px-6 py-8">
+        <div class="fade-in">
+            <h1 class="text-5xl md:text-6xl font-bold mb-4 text-center">
+                🚀 MCP Server Template
+            </h1>
+            <p class="text-xl md:text-2xl text-center text-white/90 max-w-3xl mx-auto mb-8">
+                Template for building custom Model Context Protocol servers
+            </p>
+        </div>
+
+        <!-- Endpoints Section -->
+        <div class="glass-card rounded-2xl p-8 mb-8 fade-in" style="animation-delay: 0.2s">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="text-4xl">🔌</span> Available Endpoints
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all duration-300 hover:scale-105">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">GET</span>
+                        <code class="text-yellow-300 font-mono">/health</code>
+                    </div>
+                    <p class="text-white/80 text-sm">Health check endpoint</p>
+                </div>
+                <div class="bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all duration-300 hover:scale-105">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">GET</span>
+                        <code class="text-yellow-300 font-mono">/info</code>
+                    </div>
+                    <p class="text-white/80 text-sm">Server information</p>
+                </div>
+                <div class="bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all duration-300 hover:scale-105">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">GET</span>
+                        <code class="text-yellow-300 font-mono">/tools</code>
+                    </div>
+                    <p class="text-white/80 text-sm">List all MCP tools</p>
+                </div>
+                <div class="bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all duration-300 hover:scale-105">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold">POST</span>
+                        <code class="text-yellow-300 font-mono">/mcp</code>
+                    </div>
+                    <p class="text-white/80 text-sm">MCP protocol endpoint</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tools Section -->
+        <div class="glass-card rounded-2xl p-8 mb-8 fade-in" style="animation-delay: 0.4s">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="text-4xl">🛠️</span> Available MCP Tools
+                <span class="bg-white/20 px-3 py-1 rounded-full text-lg">{{ tools_count }}</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {{ tools_html }}
+            </div>
+        </div>
+
+        <!-- Getting Started Section -->
+        <div class="glass-card rounded-2xl p-8 mb-8 fade-in" style="animation-delay: 0.6s">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="text-4xl">🎯</span> Getting Started
+            </h2>
+            <div class="space-y-4">
+                <div class="flex items-start gap-4 bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all duration-300">
+                    <span class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">1</span>
+                    <div>
+                        <h3 class="font-bold text-lg mb-1">Edit Tools</h3>
+                        <p class="text-white/80">Customize tools in <code class="bg-black/30 px-2 py-1 rounded">src/tools.py</code> to add your own functionality</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4 bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all duration-300">
+                    <span class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">2</span>
+                    <div>
+                        <h3 class="font-bold text-lg mb-1">Update Configuration</h3>
+                        <p class="text-white/80">Modify server name and description in <code class="bg-black/30 px-2 py-1 rounded">main.py</code></p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4 bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all duration-300">
+                    <span class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">3</span>
+                    <div>
+                        <h3 class="font-bold text-lg mb-1">Run Server</h3>
+                        <p class="text-white/80">Start with: <code class="bg-black/30 px-2 py-1 rounded">python main.py --http</code></p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4 bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all duration-300">
+                    <span class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">4</span>
+                    <div>
+                        <h3 class="font-bold text-lg mb-1">Test</h3>
+                        <p class="text-white/80">Validate your changes with: <code class="bg-black/30 px-2 py-1 rounded">pytest</code></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-white/70 fade-in" style="animation-delay: 0.8s">
+            <p class="text-sm">Built with 💙 using FastMCP and Tailwind CSS</p>
+        </div>
+    </div>
+</body>
+</html>
