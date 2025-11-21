@@ -67,10 +67,10 @@ async def docs(request):
     for tool_name, tool in tools_list.items():
         description = getattr(tool, "description", None) or "No description available"
         tools_html += f"""
-                <div class="bg-white/10 rounded-lg p-5 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-lg">
-                    <h3 class="font-bold text-lg mb-2 text-yellow-300">{tool_name}</h3>
-                    <p class="text-white/80 text-sm">{description}</p>
-                </div>
+                    <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-700 hover:border-indigo-500 transition-colors">
+                        <h3 class="font-semibold text-base mb-2 text-indigo-300">{tool_name}</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">{description}</p>
+                    </div>
         """
     
     # Read template and replace placeholders

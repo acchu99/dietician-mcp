@@ -1,8 +1,16 @@
 # MCP Server Template (FastMCP on Starlette)
 
-A Model Context Protocol (MCP) server template built with FastMCP on Starlette. It runs on port `8000` (configurable), supports custom Starlette middlewares, and includes example tools to demonstrate adding functionality.
+A production-ready Model Context Protocol (MCP) server template built with FastMCP on Starlette. This server runs on port 8000 (configurable), supports custom Starlette middlewares, and includes example tools to demonstrate MCP functionality.
 
-## Folder Structure
+## Architecture Overview
+
+- **Framework**: FastMCP with Starlette
+- **Transport**: HTTP and STDIO support
+- **Server**: Uvicorn ASGI server
+- **Port**: 8000 (configurable via PORT environment variable)
+- **Middleware**: CORS enabled by default, extensible middleware stack
+
+## Project Structure
 
 ```text
 .
@@ -20,15 +28,24 @@ A Model Context Protocol (MCP) server template built with FastMCP on Starlette. 
     └── test.py
 ```
 
-## What It Does (Brief)
+## Core Features
 
-- Exposes an MCP server using FastMCP + Starlette with both stdio and HTTP transport support.
-- Listens on `0.0.0.0:8000` via Uvicorn (configurable via `PORT` env var).
-- Lets you inject custom Starlette middlewares (CORS enabled by default).
-- Provides custom HTTP endpoints: `/health`, `/info`, `/tools`, and `/docs`.
-- Includes example MCP tools in `src/tools.py` (currently `add_numbers`).
+- MCP server implementation using FastMCP and Starlette
+- HTTP and STDIO transport protocols
+- Custom HTTP endpoints for health checks, server info, and tool listing
+- Interactive web-based documentation
+- Extensible middleware support
+- Example MCP tools demonstrating core functionality
 
-## Setup
+## Installation
+
+### Prerequisites
+
+- Python 3.11 or higher
+- pip package manager
+- Docker (optional, for containerized deployment)
+
+### Local Setup
 
 Install dependencies:
 
@@ -36,7 +53,9 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-## Run
+## Running the Server
+
+### Local Development
 
 Start the server with HTTP transport:
 
@@ -44,94 +63,133 @@ Start the server with HTTP transport:
 python main.py
 ```
 
-Server will be available at `http://localhost:8000` (or your specified port).
+The server will be available at `http://localhost:8000` (or the port specified in your PORT environment variable).
 
-### Docker (optional)
+### Docker Deployment
 
-If you prefer containers and your Dockerfile/compose are configured for this app:
+#### Option 1: Automated Test and Deploy
 
-#### Option 1: Run tests first, then start the application
-
-Use the provided script to automatically run tests before building and starting:
+Use the provided script to run automated tests before deployment:
 
 ```bash
 ./scripts/test-and-run.sh
 ```
 
-This script will:
+This workflow will:
 
-1. Build and run tests in a container
-2. Exit if tests fail
-3. Build and start the application only if tests pass
+1. Build and execute tests in isolated containers
+2. Halt deployment if any tests fail
+3. Build and start the production service only if all tests pass
 
-#### Option 2: Run tests separately
+#### Option 2: Manual Test Execution
 
 ```bash
-# Run tests (this will start the server, wait for it to be healthy, then run tests)
+# Execute test suite
 docker compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from test
 
-# If tests pass, start the application for production
+# Deploy production service after successful tests
 docker compose up --build -d
 ```
 
-#### Option 3: Start production server only
+#### Option 3: Direct Production Deployment
 
 ```bash
-# Start production server
+# Deploy without running tests
 docker compose up --build -d
 
-# Or using the main service directly
+# Alternative: Direct Docker commands
 docker build -t macrosense-mcp .
 docker run --rm -p 8000:8000 macrosense-mcp
 ```
 
-#### Clean up containers
+#### Container Management
 
 ```bash
+# Stop and remove containers
 docker compose down
 docker compose -f docker-compose.test.yml down
 ```
 
-## Custom Middlewares
+## Configuration
 
-Edit the `cors_middleware` in `main.py` to adjust CORS settings or add additional Starlette middlewares to the `middleware` list when creating the app.
+### Middleware Configuration
 
-## Available HTTP Endpoints
+Edit the `cors_middleware` configuration in `main.py` to customize CORS settings or add additional Starlette middlewares to the middleware stack.
+
+### Environment Variables
+
+- `PORT`: Server port (default: 8000)
+- `MONGODB_URI`: MongoDB connection string
+- `HOST`: Bind address (default: 0.0.0.0)
+
+## API Endpoints
+
+### Core Endpoints
 
 - `GET /` - Redirects to `/docs`
-- `GET /health` - Health check endpoint
-- `GET /info` - Server information and available tools count
+- `GET /health` - Health check endpoint for monitoring
+- `GET /info` - Server metadata and tool information
 - `GET /tools` - List all available MCP tools with descriptions
-- `GET /docs` - Interactive documentation page
-- `POST /mcp` - MCP protocol endpoint
+- `GET /docs` - Interactive API documentation
+- `POST /mcp` - Primary MCP protocol endpoint
 
 ## MCP Tools
 
-Tools are defined in `src/tools.py`. The current example tool:
+### Tool Development
 
-### `add_numbers`
+Tools are defined in `src/tools.py`. Use the `@mcp.tool()` decorator to register new tools.
 
-- Purpose: Adds two numbers together
-- Parameters:
-  - `number1` (float): First number
-  - `number2` (float): Second number
-- Returns: `{"result": sum}`
+### Available Tools
 
-To add your own tools, edit `src/tools.py` and use the `@mcp.tool()` decorator.
+#### `add_numbers`
+
+Performs addition of two numeric values.
+
+**Parameters:**
+
+- `number1` (float): First operand
+- `number2` (float): Second operand
+
+**Returns:**
+
+```json
+{
+  "result": <sum>
+}
+```
+
+**Example Usage:**
+
+```python
+@mcp.tool()
+def add_numbers(number1: float, number2: float) -> dict:
+    """Calculate the sum of two numbers"""
+    return {"result": sum([number1, number2])}
+```
 
 ## Testing
 
-### Running Tests
+### Test Framework
 
-The project uses pytest with async support for testing. Tests are located in the `tests/` directory.
+The project uses pytest with asyncio support for asynchronous test execution. All tests are located in the `tests/` directory.
 
-Run all tests:
+### Running Tests Locally
+
+Execute the complete test suite:
 
 ```bash
 pytest
-# or with verbose output
+```
+
+Run with verbose output:
+
+```bash
 pytest -v
-# or using the virtual environment directly
+```
+
+Using virtual environment directly:
+
+```bash
 .venv/bin/python -m pytest tests/test.py -v
 ```
 
@@ -149,9 +207,9 @@ python_functions = ["test_*"]
 addopts = "-v --tb=short"
 ```
 
-### Test Structure
+### Test Architecture
 
-Tests use FastMCP's in-memory client for fast, deterministic testing:
+Tests utilize FastMCP's in-memory client for fast, deterministic testing:
 
 ```python
 import pytest
@@ -173,22 +231,26 @@ async def test_add_numbers(mcp_client: Client):
     assert result.data["result"] == 3
 ```
 
-### Current Test Coverage
+### Test Coverage
 
-- **test_server_info**: Verifies server initialization and metadata
-- **test_list_tools**: Checks tool registration
-- **test_add_numbers**: Parametrized tests with multiple inputs (7 test cases)
-- **test_add_numbers_with_negative_numbers**: Negative number handling
-- **test_add_numbers_with_floats**: Floating-point precision
+The test suite includes:
 
-All tests follow FastMCP best practices:
+- **test_server_info**: Validates server initialization and metadata
+- **test_list_tools**: Verifies tool registration
+- **test_add_numbers**: Parametrized tests covering multiple input scenarios (7 test cases)
+- **test_add_numbers_with_negative_numbers**: Negative value handling
+- **test_add_numbers_with_floats**: Floating-point precision validation
+
+### Testing Best Practices
+
+All tests adhere to FastMCP testing standards:
 
 - Single behavior per test
 - Self-contained setup
 - Clear intent with descriptive names
 - Effective assertions with error messages
 
-### Manual Testing
+### Integration Testing
 
-Or use an MCP client (e.g., MCP Inspector) that supports HTTP transport to connect to `http://localhost:8000` and invoke the available tools.
+For integration testing with external MCP clients, use MCP Inspector or similar tools that support HTTP transport to connect to `http://localhost:8000`.
 

@@ -1,134 +1,171 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCP Server Template Documentation</title>
+    <meta name="description" content="Model Context Protocol Server - API Documentation">
+    <title>MCP Server - API Documentation</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style type="text/tailwindcss">
         @theme {
-            --color-primary: #3b82f6;
-            --color-secondary: #8b5cf6;
-            --color-accent: #06b6d4;
+            --color-primary: #2563eb;
+            --color-secondary: #7c3aed;
+            --color-accent: #0891b2;
+            --color-success: #059669;
+            --color-warning: #d97706;
         }
         
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
         
-        .fade-in {
-            animation: fadeIn 0.6s ease-in;
+        .card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.12);
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .section-header {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen text-white">
-    <!-- Header -->
-    <div class="container mx-auto px-6 py-8">
-        <div class="fade-in">
-            <h1 class="text-5xl md:text-6xl font-bold mb-4 text-center">
-                🚀 MCP Server Template
+<body class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 min-h-screen text-gray-100">
+    <div class="container mx-auto px-6 py-12 max-w-7xl">
+        <!-- Header -->
+        <header class="mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-3 text-center text-white">
+                Model Context Protocol Server
             </h1>
-            <p class="text-xl md:text-2xl text-center text-white/90 max-w-3xl mx-auto mb-8">
-                Template for building custom Model Context Protocol servers
+            <p class="text-lg md:text-xl text-center text-gray-300 max-w-3xl mx-auto">
+                API Documentation and Deployment Guide
             </p>
-        </div>
+        </header>
 
-        <!-- Endpoints Section -->
-        <div class="glass-card rounded-2xl p-8 mb-8 fade-in" style="animation-delay: 0.2s">
-            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
-                <span class="text-4xl">🔌</span> Available Endpoints
+        <!-- API Endpoints -->
+        <section class="card rounded-xl p-8 mb-8">
+            <h2 class="text-2xl font-bold section-header text-white">
+                API Endpoints
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all duration-300 hover:scale-105">
+                <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-700 hover:border-slate-600 transition-colors">
                     <div class="flex items-center gap-3 mb-2">
-                        <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">GET</span>
-                        <code class="text-yellow-300 font-mono">/health</code>
+                        <span class="bg-success text-white px-3 py-1 rounded text-xs font-semibold tracking-wide">GET</span>
+                        <code class="text-cyan-400 font-mono text-sm">/health</code>
                     </div>
-                    <p class="text-white/80 text-sm">Health check endpoint</p>
+                    <p class="text-gray-400 text-sm">Health check endpoint for monitoring</p>
                 </div>
-                <div class="bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all duration-300 hover:scale-105">
+                <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-700 hover:border-slate-600 transition-colors">
                     <div class="flex items-center gap-3 mb-2">
-                        <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">GET</span>
-                        <code class="text-yellow-300 font-mono">/info</code>
+                        <span class="bg-success text-white px-3 py-1 rounded text-xs font-semibold tracking-wide">GET</span>
+                        <code class="text-cyan-400 font-mono text-sm">/info</code>
                     </div>
-                    <p class="text-white/80 text-sm">Server information</p>
+                    <p class="text-gray-400 text-sm">Server metadata and configuration</p>
                 </div>
-                <div class="bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all duration-300 hover:scale-105">
+                <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-700 hover:border-slate-600 transition-colors">
                     <div class="flex items-center gap-3 mb-2">
-                        <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">GET</span>
-                        <code class="text-yellow-300 font-mono">/tools</code>
+                        <span class="bg-success text-white px-3 py-1 rounded text-xs font-semibold tracking-wide">GET</span>
+                        <code class="text-cyan-400 font-mono text-sm">/tools</code>
                     </div>
-                    <p class="text-white/80 text-sm">List all MCP tools</p>
+                    <p class="text-gray-400 text-sm">List all available MCP tools</p>
                 </div>
-                <div class="bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all duration-300 hover:scale-105">
+                <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-700 hover:border-slate-600 transition-colors">
                     <div class="flex items-center gap-3 mb-2">
-                        <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold">POST</span>
-                        <code class="text-yellow-300 font-mono">/mcp</code>
+                        <span class="bg-primary text-white px-3 py-1 rounded text-xs font-semibold tracking-wide">POST</span>
+                        <code class="text-cyan-400 font-mono text-sm">/mcp</code>
                     </div>
-                    <p class="text-white/80 text-sm">MCP protocol endpoint</p>
+                    <p class="text-gray-400 text-sm">Main MCP protocol endpoint</p>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Tools Section -->
-        <div class="glass-card rounded-2xl p-8 mb-8 fade-in" style="animation-delay: 0.4s">
-            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
-                <span class="text-4xl">🛠️</span> Available MCP Tools
-                <span class="bg-white/20 px-3 py-1 rounded-full text-lg">{{ tools_count }}</span>
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {{ tools_html }}
+        <!-- MCP Tools -->
+        <section class="card rounded-xl p-8 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-white">MCP Tools</h2>
+                <span class="bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm font-semibold">{{ tools_count }} Available</span>
             </div>
-        </div>
+            <div class="border-t border-slate-700 pt-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {{ tools_html }}
+                </div>
+            </div>
+        </section>
 
-        <!-- Getting Started Section -->
-        <div class="glass-card rounded-2xl p-8 mb-8 fade-in" style="animation-delay: 0.6s">
-            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
-                <span class="text-4xl">🎯</span> Getting Started
+        <!-- Deployment Guide -->
+        <section class="card rounded-xl p-8 mb-8">
+            <h2 class="text-2xl font-bold section-header text-white">
+                Deployment Guide
             </h2>
-            <div class="space-y-4">
-                <div class="flex items-start gap-4 bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all duration-300">
-                    <span class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">1</span>
-                    <div>
-                        <h3 class="font-bold text-lg mb-1">Edit Tools</h3>
-                        <p class="text-white/80">Customize tools in <code class="bg-black/30 px-2 py-1 rounded">src/tools.py</code> to add your own functionality</p>
+            
+            <!-- Local Development -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-indigo-300 mb-4">Local Development</h3>
+                <div class="space-y-4">
+                    <div class="bg-slate-800/30 rounded-lg p-5 border border-slate-700">
+                        <h4 class="font-semibold text-base mb-2 text-white">1. Install Dependencies</h4>
+                        <code class="block bg-slate-950 text-gray-300 px-4 py-3 rounded text-sm font-mono">pip install -r requirements.txt</code>
                     </div>
-                </div>
-                <div class="flex items-start gap-4 bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all duration-300">
-                    <span class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">2</span>
-                    <div>
-                        <h3 class="font-bold text-lg mb-1">Update Configuration</h3>
-                        <p class="text-white/80">Modify server name and description in <code class="bg-black/30 px-2 py-1 rounded">main.py</code></p>
+                    <div class="bg-slate-800/30 rounded-lg p-5 border border-slate-700">
+                        <h4 class="font-semibold text-base mb-2 text-white">2. Configure Environment</h4>
+                        <p class="text-gray-400 text-sm mb-2">Set required environment variables:</p>
+                        <code class="block bg-slate-950 text-gray-300 px-4 py-3 rounded text-sm font-mono">export PORT=8000<br>export MONGODB_URI=your_connection_string</code>
                     </div>
-                </div>
-                <div class="flex items-start gap-4 bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all duration-300">
-                    <span class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">3</span>
-                    <div>
-                        <h3 class="font-bold text-lg mb-1">Run Server</h3>
-                        <p class="text-white/80">Start with: <code class="bg-black/30 px-2 py-1 rounded">python main.py --http</code></p>
-                    </div>
-                </div>
-                <div class="flex items-start gap-4 bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all duration-300">
-                    <span class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">4</span>
-                    <div>
-                        <h3 class="font-bold text-lg mb-1">Test</h3>
-                        <p class="text-white/80">Validate your changes with: <code class="bg-black/30 px-2 py-1 rounded">pytest</code></p>
+                    <div class="bg-slate-800/30 rounded-lg p-5 border border-slate-700">
+                        <h4 class="font-semibold text-base mb-2 text-white">3. Start Server</h4>
+                        <code class="block bg-slate-950 text-gray-300 px-4 py-3 rounded text-sm font-mono">python main.py</code>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Docker Deployment -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-indigo-300 mb-4">Docker Deployment</h3>
+                <div class="space-y-4">
+                    <div class="bg-slate-800/30 rounded-lg p-5 border border-slate-700">
+                        <h4 class="font-semibold text-base mb-2 text-white">Standard Deployment</h4>
+                        <code class="block bg-slate-950 text-gray-300 px-4 py-3 rounded text-sm font-mono">docker compose up --build -d</code>
+                        <p class="text-gray-400 text-sm mt-2">Builds and starts the service in detached mode</p>
+                    </div>
+                    <div class="bg-slate-800/30 rounded-lg p-5 border border-slate-700">
+                        <h4 class="font-semibold text-base mb-2 text-white">Test-Driven Deployment</h4>
+                        <code class="block bg-slate-950 text-gray-300 px-4 py-3 rounded text-sm font-mono">./scripts/test-and-run.sh</code>
+                        <p class="text-gray-400 text-sm mt-2">Runs automated tests before deployment. Deployment only proceeds if all tests pass.</p>
+                    </div>
+                    <div class="bg-slate-800/30 rounded-lg p-5 border border-slate-700">
+                        <h4 class="font-semibold text-base mb-2 text-white">Manual Test Execution</h4>
+                        <code class="block bg-slate-950 text-gray-300 px-4 py-3 rounded text-sm font-mono">docker compose -f docker-compose.test.yml up --build --abort-on-container-exit</code>
+                        <p class="text-gray-400 text-sm mt-2">Runs tests in isolated containers with automatic cleanup</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testing -->
+            <div>
+                <h3 class="text-xl font-semibold text-indigo-300 mb-4">Testing</h3>
+                <div class="bg-slate-800/30 rounded-lg p-5 border border-slate-700">
+                    <p class="text-gray-400 text-sm mb-3">Run the test suite locally:</p>
+                    <code class="block bg-slate-950 text-gray-300 px-4 py-3 rounded text-sm font-mono">pytest -v</code>
+                    <div class="mt-4 pt-4 border-t border-slate-700">
+                        <p class="text-gray-400 text-sm mb-2">Test coverage includes:</p>
+                        <ul class="list-disc list-inside text-gray-400 text-sm space-y-1">
+                            <li>Server initialization and health checks</li>
+                            <li>Tool registration and execution</li>
+                            <li>API endpoint responses</li>
+                            <li>Error handling and edge cases</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- Footer -->
-        <div class="text-center text-white/70 fade-in" style="animation-delay: 0.8s">
-            <p class="text-sm">Built with 💙 using FastMCP and Tailwind CSS</p>
-        </div>
+        <footer class="text-center text-gray-500 border-t border-slate-800 pt-8 mt-12">
+            <p class="text-sm">Built with FastMCP and Tailwind CSS</p>
+        </footer>
     </div>
 </body>
 </html>
