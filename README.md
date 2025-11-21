@@ -87,10 +87,74 @@ To add your own tools, edit `src/tools.py` and use the `@mcp.tool()` decorator.
 
 ## Testing
 
-Run tests with:
+### Running Tests
+
+The project uses pytest with async support for testing. Tests are located in the `tests/` directory.
+
+Run all tests:
 
 ```bash
 pytest
+# or with verbose output
+pytest -v
+# or using the virtual environment directly
+.venv/bin/python -m pytest tests/test.py -v
 ```
 
+### Test Configuration
+
+The `pyproject.toml` file contains pytest configuration:
+
+```toml
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+```
+
+### Test Structure
+
+Tests use FastMCP's in-memory client for fast, deterministic testing:
+
+```python
+import pytest
+from fastmcp.client import Client
+from main import mcp
+
+@pytest.fixture
+async def mcp_client():
+    """Fixture that provides a FastMCP client for testing."""
+    async with Client(mcp) as client:
+        yield client
+
+async def test_add_numbers(mcp_client: Client):
+    """Test add_numbers tool."""
+    result = await mcp_client.call_tool(
+        name="add_numbers", 
+        arguments={"number1": 1, "number2": 2}
+    )
+    assert result.data["result"] == 3
+```
+
+### Current Test Coverage
+
+- **test_server_info**: Verifies server initialization and metadata
+- **test_list_tools**: Checks tool registration
+- **test_add_numbers**: Parametrized tests with multiple inputs (7 test cases)
+- **test_add_numbers_with_negative_numbers**: Negative number handling
+- **test_add_numbers_with_floats**: Floating-point precision
+
+All tests follow FastMCP best practices:
+
+- Single behavior per test
+- Self-contained setup
+- Clear intent with descriptive names
+- Effective assertions with error messages
+
+### Manual Testing
+
 Or use an MCP client (e.g., MCP Inspector) that supports HTTP transport to connect to `http://localhost:8000` and invoke the available tools.
+
