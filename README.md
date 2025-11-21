@@ -71,14 +71,14 @@ This script will:
 docker compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from test
 
 # If tests pass, start the application for production
-docker compose --profile production up -d
+docker compose up --build -d
 ```
 
 #### Option 3: Start production server only
 
 ```bash
-# Start without tests
-docker compose --profile production up --build -d
+# Start production server
+docker compose up --build -d
 
 # Or using the main service directly
 docker build -t macrosense-mcp .
