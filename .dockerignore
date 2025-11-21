@@ -56,9 +56,9 @@ Thumbs.db
 *.log
 logs/
 
-# Test files
+# Test files (exclude from production, but include tests/ directory)
 test_*.py
-tests/
+# tests/  # Commented out - we need tests/ for running tests in containers
 .pytest_cache/
 .coverage
 htmlcov/

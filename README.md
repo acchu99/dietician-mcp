@@ -50,12 +50,46 @@ Server will be available at `http://localhost:8000` (or your specified port).
 
 If you prefer containers and your Dockerfile/compose are configured for this app:
 
-```bash
-docker build -t food-mcp .
-docker run --rm -p 8000:8000 food-mcp
+#### Option 1: Run tests first, then start the application
 
-# or with compose
-docker compose up --build
+Use the provided script to automatically run tests before building and starting:
+
+```bash
+./scripts/test-and-run.sh
+```
+
+This script will:
+
+1. Build and run tests in a container
+2. Exit if tests fail
+3. Build and start the application only if tests pass
+
+#### Option 2: Run tests separately
+
+```bash
+# Run tests (this will start the server, wait for it to be healthy, then run tests)
+docker compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from test
+
+# If tests pass, start the application for production
+docker compose --profile production up -d
+```
+
+#### Option 3: Start production server only
+
+```bash
+# Start without tests
+docker compose --profile production up --build -d
+
+# Or using the main service directly
+docker build -t macrosense-mcp .
+docker run --rm -p 8000:8000 macrosense-mcp
+```
+
+#### Clean up containers
+
+```bash
+docker compose down
+docker compose -f docker-compose.test.yml down
 ```
 
 ## Custom Middlewares

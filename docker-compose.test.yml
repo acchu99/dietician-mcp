@@ -6,24 +6,19 @@ services:
     image: macrosense-mcp
     container_name: mcp-server
     environment:
-      - MONGODB_URI=${MONGODB_URI}
       - PYTHONUNBUFFERED=1
       - HOST=0.0.0.0
-      - PORT=${PORT}
-    restart: unless-stopped
+      - PORT=8000
     volumes:
       - ./logs:/app/logs
     ports:
-      - "8080:8000"
+      - "8000:8000"
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 5s
       timeout: 3s
       retries: 5
       start_period: 10s
-    profiles:
-      - test
-      - production
 
   test:
     build:
@@ -37,5 +32,3 @@ services:
     depends_on:
       macrosense-mcp-server:
         condition: service_healthy
-    profiles:
-      - test
